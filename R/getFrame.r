@@ -32,7 +32,7 @@ getFrame <- function(wave, time, absolute=F, winlen=25, winfn=blkwin) {
   } else {
     lpad <- NULL
   }
-  ie <- ib + 2 * halfwin - 1
+  ie <- ib + 2 * halfwin
   if ( ie > nsam) {
     rpad <- rep(0, ie - nsam)
     ie <- nsam
@@ -40,7 +40,8 @@ getFrame <- function(wave, time, absolute=F, winlen=25, winfn=blkwin) {
     rpad <- NULL
   }
   FUN <- match.fun(winfn)
-  w <- c(lpad,wave$wav@left[ib:ie],rpad) * FUN(2*halfwin)
+  w <- c(lpad,wave$wav@left[ib:ie],rpad) * FUN(2*halfwin + 1)
+  attr(w, 'win:sum') = sum(FUN(2*halfwin + 1))
   w
 }
 
