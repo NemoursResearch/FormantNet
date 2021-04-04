@@ -1,0 +1,43 @@
+loadLibs <- function() {
+#
+# Load R packages
+#
+  library(tools)
+  library(tuneR)
+  library(signal)
+  setWavPlayer("/usr/local/srl/bin/play")
+#
+# Source locally developed functions
+#
+  source('/usr/local/srl/src/R/abs2spec.r')
+  source('/usr/local/srl/src/R/ascale.r')
+  source('/usr/local/srl/src/R/cep.r')
+  source('/usr/local/srl/src/R/envelop.r')
+  source('/usr/local/srl/src/R/estSpect.r')
+  source('/usr/local/srl/src/R/formant.r')
+  source('/usr/local/srl/src/R/fspec.r')
+  source('/usr/local/srl/src/R/getFrame.r')
+  source('/usr/local/srl/src/R/getWavData.r')
+  source('/usr/local/srl/src/R/gltpls.r')
+  source('/usr/local/srl/src/R/levnsn.r')
+  source('/usr/local/srl/src/R/lfm.r')
+  source('/usr/local/srl/src/R/lpcSpect.r')
+  source('/usr/local/srl/src/R/nn_norm.r')
+  source('/usr/local/srl/src/R/mstft.r')
+  source('/usr/local/srl/src/R/notchFilt.r')
+  source('/usr/local/srl/src/R/ola.r')
+  source('/usr/local/srl/src/R/pbfit.r')
+  source('/usr/local/srl/src/R/peaks.r')
+  source('/usr/local/srl/src/R/preemp.r')
+  source('/usr/local/srl/src/R/segLoc.r')
+  source('/usr/local/srl/src/R/segSpect.r')
+  source('/usr/local/srl/src/R/segZcep.r')
+  source('/usr/local/srl/src/R/setVtPars.r')
+  source('/usr/local/srl/src/R/setabc.r')
+  source('/usr/local/srl/src/R/specgram_rev.r')
+  source('/usr/local/srl/src/R/srcSpect.r')
+  source('/usr/local/srl/src/R/srcfn.r')
+  source('/usr/local/srl/src/R/wav2r.r')
+  source('/usr/local/srl/src/R/winfns.r')
+  source('/usr/local/srl/src/R/zcep.r')
+}
