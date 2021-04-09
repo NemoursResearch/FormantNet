@@ -33,9 +33,9 @@ The output models and evaluation files will be saved in a directory with a name 
 
 The output formant track files are stored as text files with the suffix .abs. The following is the first few lines from an example output file (with values rounded to 1 place after the decimal point, for brevity):
 
-> test\_dr1\_felc0\_si1386 AA 1 1 0.0 200.0 60 0 0 60 40 2 7   578.0 346.4 -20.5 1081.1 235.4 -27.2 2435.6 760.9 -30.0 3267.7 732.1 -28.2 4501.1 1276.0 -31.2 6511.0 2621.8 -42.5 -3026.4 4877.2 0.0 
-> test\_dr1\_felc0\_si1386 AA 1 1 5.0 200.0 60 0 0 60 40 2 7   683.5 229.3 -19.6 953.2 269.2 -19.7 2644.0 851.6 -26.1 3158.2 383.5 -32.2 4267.3 556.6 -35.8 6737.9 2716.3 -41.8 -1850.0 4717.65 0.0 
-> test\_dr1\_felc0\_si1386 AA 1 1 10.0 200.0 60 0 0 60 40 2 7   718.8 237.9 -18.1 946.5 333.1 -20.0 2728.7 566.0 -29.6 3144.7 285.4 -36.7 4302.6 539.9 -38.1 7174.0 1398.4 -48.1 -1329.9 4069.2 0.0 
+> test\_dr1\_felc0\_si1386 AA 1 1 0.0 200.0 60 0 0 60 40 2 7   578.0 346.4 -20.5 1081.1 235.4 -27.2 2435.6 760.9 -30.0 3267.7 732.1 -28.2 4501.1 1276.0 -31.2 6511.0 2621.8 -42.5 -3026.4 4877.2 0.0  
+> test\_dr1\_felc0\_si1386 AA 1 1 5.0 200.0 60 0 0 60 40 2 7   683.5 229.3 -19.6 953.2 269.2 -19.7 2644.0 851.6 -26.1 3158.2 383.5 -32.2 4267.3 556.6 -35.8 6737.9 2716.3 -41.8 -1850.0 4717.65 0.0  
+> test\_dr1\_felc0\_si1386 AA 1 1 10.0 200.0 60 0 0 60 40 2 7   718.8 237.9 -18.1 946.5 333.1 -20.0 2728.7 566.0 -29.6 3144.7 285.4 -36.7 4302.6 539.9 -38.1 7174.0 1398.4 -48.1 -1329.9 4069.2 0.0  
 
 This format was designed for the specific interests of our laboratory; the first 12 columns are placeholders for parameters of interest of us to be filled in later, with the exception of column 1 (the input filename), and column 4, the frame's time-stamp. Note that our input files were generated at a 5-msec frame rate, and so the time stamps are filled in assuming a 5-msec frame rate (this can be easily changed in the script).
 
@@ -62,34 +62,34 @@ The scripts above require the following text files to run, which we generated fr
 
 * **nframes2.txt**: This text file is a list of the number of frames of each file with formant estimates in the VTR dataset, followed by the filename, e.g.:
 
-> 552 test_dr1_felc0_si1386
-> 340 test_dr1_felc0_si2016
-> 418 test_dr1_felc0_si756
+> 552 test_dr1_felc0_si1386  
+> 340 test_dr1_felc0_si2016  
+> 418 test_dr1_felc0_si756  
 
 This is used by **get_report.sh** to compile the data in the specified order and make sure that the number of frames of data extracted by that script is the same as that found in the VTR data--for a grand total of 160,511 frames.
 
 * **textdb2.txt**: A 160511-line text file holding the hand-corrected formant measurements of the VTR Formants database, in the following format:
 
-> test_dr1_felc0_si1386 test dr1 f felc0 si si1386    0  655.835 1489.377 2556.268 3603.549  220.735  322.101  397.020  460.449
-> test_dr1_felc0_si1386 test dr1 f felc0 si si1386   10  765.140 1513.626 2589.981 3608.018  211.584  357.977  356.811  453.889
-> test_dr1_felc0_si1386 test dr1 f felc0 si si1386   20  749.220 1517.242 2615.817 3658.496  204.688  335.453  373.721  447.311
+> test_dr1_felc0_si1386 test dr1 f felc0 si si1386    0  655.835 1489.377 2556.268 3603.549  220.735  322.101  397.020  460.449  
+> test_dr1_felc0_si1386 test dr1 f felc0 si si1386   10  765.140 1513.626 2589.981 3608.018  211.584  357.977  356.811  453.889  
+> test_dr1_felc0_si1386 test dr1 f felc0 si si1386   20  749.220 1517.242 2615.817 3658.496  204.688  335.453  373.721  447.311  
 
 The columns indicate the filename; subset (test or train); dialect region; gender; speaker; TIMIT sentence type; sentence ID; and time stamp, followed by F1-F4 and B1-B4.
 
 * **labels3.txt**: A 160511-line text file holding phonological information for each frame, derived from the TIMIT phone labels, in the following format:
 
-> test_dr1_felc0_si1386 130 sil vl sil
-> test_dr1_felc0_si1386 140 q vl stop
-> test_dr1_felc0_si1386 150 q vl stop
-> test_dr1_felc0_si1386 160 ih vd vow
+> test_dr1_felc0_si1386 130 sil vl sil  
+> test_dr1_felc0_si1386 140 q vl stop  
+> test_dr1_felc0_si1386 150 q vl stop  
+> test_dr1_felc0_si1386 160 ih vd vow  
 
 The columns indicate the filename; the time stamp; the TIMIT phonetic label; whether the label indicates a phone that is phonologically voiced (vd) or voiceless (vl); and the broad phonetic category of the phone (one of sil[ence], vow[el], semi[vowel], nasal, fric[ative], aff[ricate], or stop).
 
 * **pitchlabs.txt**: A 160511-line text file holding information on whether each frame is voiced or voiceless; our data was calculated with the Praat pitch tracker, using the default settings, as per Schiel & Zitzelberger (2018). The format is as follows:
 
-> test_dr1_felc0_si1386 130 vl 0
-> test_dr1_felc0_si1386 140 vd 259.41
-> test_dr1_felc0_si1386 150 vd 247.19
+> test_dr1_felc0_si1386 130 vl 0  
+> test_dr1_felc0_si1386 140 vd 259.41  
+> test_dr1_felc0_si1386 150 vd 247.19  
 
 The columns indicate the filename; the time stamp; the voicing status of the frame; and the pitch estimate (not used by the scripts above).
 
