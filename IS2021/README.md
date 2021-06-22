@@ -96,7 +96,7 @@ The columns indicate the filename; the time stamp; the voicing status of the fra
 
 ## References:
 
-* J. Lilley and H. T. Bunnell, "Unsupervised training of a DNN-based formant tracker," manuscript submitted to *Interspeech 2021*.
+* J. Lilley and H. T. Bunnell, "Unsupervised training of a DNN-based formant tracker," manuscript to appear in *Interspeech 2021*.
 * Y. Dissen, J. Goldberger, and J. Keshet, “Formant estimation and tracking: A deep learning approach,” *Journal of the Acoustical Society of America*, vol. 145, no. 2, pp. 642-653, Feb. 2019.
 * L. Deng, X. Cui, R. Pruvenok, Y. Chen, S. Momen, and A. Alwan, “A database of vocal tract resonance trajectories for research in speech processing,” in *Proceedings of ICASSP 2006—IEEE International Conference on Acoustics, Speech and Signal Processing*, vol. 1, pp. I-I, 2006.  Database downloaded from http://www.seas.ucla.edu/spapl/VTRFormants.html
 * J. S. Garofolo, L. F. Lamel, W. M. Fisher, J. G. Fiscus, D. S. Pallett, N. L. Dahlgren, and V. Zue, *The DARPA TIMIT acoustic-phonetic continuous speech corpus*. Linguistic Data Consortium, 1993.
