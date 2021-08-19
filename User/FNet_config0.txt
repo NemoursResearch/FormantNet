@@ -1,0 +1,86 @@
+# FormantNet Parameter File
+
+# Do not delete or modify the following line
+[DEFAULT]
+
+# Run in Test Mode
+TESTRUN = True
+
+# Number of formants/poles  
+NFORMANTS = 6
+# Number of antiformants/zeros  
+NZEROS = 1
+
+# Delta-frequency loss weight  
+DIFFWEIGHT = 0.15
+
+# Wavefile sampling rate (samples per second)  
+SAMPLERATE = 16000.0
+# Maximum frequency of analysis window -- must be <= SAMPLERATE/2 (default is SAMPLERATE/2)
+MAX_ANALYSIS_FREQ = 8000.0
+
+# Minimum and maximum formant parameter output values allowed:
+MAXFREQ = 8000.0
+MINFREQ = 0.0
+MAXBW = 5000.0
+MINBW = 20.0
+MAXAMP = 100.0
+MINAMP = -100.0
+
+# Length of analysis window in msec  
+WINDOW_LENGTH_MSEC = 32.0
+# Spacing of analysis windows in msec  
+FRAME_STRIDE_MSEC = 5.0
+
+# Degree of pre-emphasis -- set to 0 if no pre-emphasis is desired; otherwise we suggest 0.98  
+PREEMPH = 0.98
+# if True, smooth linear-scale envelope; else smooth log-scale envelope  
+SMOOTH_LINEAR = True
+# Number of smoothing passes on spectral envelope (in spenvl() function)  
+ENV_SMOOTH_PASSES = 6
+# Value added to linear envelope before conversion to log scale  
+FLOOR = 0.001
+
+# training sequence length for RNNs  
+SEQUENCE_LENGTH = 64
+# stride (# frames between sequence start points) - default is to set equal to SEQUENCE_LENGTH 
+SEQUENCE_STRIDE = 64
+# How many sequences per batch  
+BATCH_SIZE = 32
+
+# No. of LSTM layers
+LSTM_LAYERS = 1
+# Size of LSTM layer (# units)  
+LSTM_UNITS = 512
+# No. of Dense layers (including output layer)
+DENSE_LAYERS = 1
+# Size of Dense layer (# units) -- NOT including output layer
+DENSE_UNITS = 512
+# Activation function Dense hidden layers (not output layer)
+DENSE_ACTIVATION = relu
+# Activation function for Dense output layer (sigmoid, tanh, softsign, or relu)  
+TOP_ACTIVATION = sigmoid
+
+# Learning rate for Adam optimizer  
+LEARNING_RATE = 0.0001
+
+# Whether to check for a pretrained model and continue training it  
+ALLOW_RETRAIN = True
+# Maximum number of training epochs  
+EPOCHS = 200
+# No. of epochs to wait before deciding on convergence  
+PATIENCE = 20
+# Whether to delete older models saved during training, after training is completed 
+DELETE_OLDER_MODELS = True
+
+# Calculate distribution statistics and model loss on test set (skip this to save time)
+GET_TEST_LOSS = True
+
+# Output file extension
+OUT_EXT = txt
+# If True, convert amp. adjustment factors to estimates of actual amplitudes (in dB) at predicted freqs.  
+REAL_AMPLITUDES = True
+# If True, output formant features in order F1 F2 ... B1 B2 ... A1 A2 ...; otherwise F1 B1 A1 F2 B2 A2 ...  
+FREQUENCIES_FIRST = True
+# Number of binomial smoothing passes on predicted formant parameters
+BIN_SMOOTH_PASSES = 10
