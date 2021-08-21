@@ -12,15 +12,15 @@ The files in the **notebooks/** directory are simply Notebook versions of the sa
 ## Quick-Start:
 **FNet_train.py** trains a FormantNet model on a corpus of wavefiles. **FNet_track.py** takes a trained FormantNet model and runs it on a list of wavefiles to generate formant tracks. Alternatively, **FormantNet.py** does both training and tracking in the same script (it can't be used to do just one). Note that **FNet_track.py** can use models trained by either **FormantNet.py** or **FNet_train.py**.
 
-Each script has a set of required files as well as optional files that can be specified on the command line with flags, as well as further options that can be specified in a configuration file. The command-line syntax of any of these scripts can be displayed by using the -h ("help") flag, e.g.: 
-**> python3 FormantNet.py -h**
+Each script has a set of required files as well as optional files that can be specified on the command line with flags, as well as further options that can be specified in a configuration file. The command-line syntax of any of these scripts can be displayed by using the -h ("help") flag, e.g.:  
+**python3 FormantNet.py -h**
 
 Their syntax is summarized as follows:
 
-**python3 FNet_train.py** _[**-c** config] [**-v** validlist] modeldir trainlist_
-**python3 FNet_track.py** _[**-c** config] [**-o** outdir] modeldir testlist_
+**python3 FNet_train.py** _[**-c** config] [**-v** validlist] modeldir trainlist_  
+**python3 FNet_track.py** _[**-c** config] [**-o** outdir] modeldir testlist_  
 
-**python3 FormantNet.py** _[**-c** config] [**-v** validlist] [**-t** testlist] [**-o** outdir] modeldir trainlist_
+**python3 FormantNet.py** _[**-c** config] [**-v** validlist] [**-t** testlist] [**-o** outdir] modeldir trainlist_  
 
 In other words, each script requires the name of a model directory (the location of either the model to be trained, or the already-trained model) and a list of either the training or test wavefiles. Flags can be used to specify further options. For the training scripts, one can provide a validation filelist with the **-v** option (see below). With FormantNet.py, the test filelist is optional and can be specified by the **-t** option; if it is not provided, then the trained model is run on the training and validation files. The filelists should provide the complete path to the input wavefiles; some example filelists are provided in the **filelists/** directory. Like the **PaPE2021** scripts (but unlike the **IS2021** scripts), these scripts take raw wavefiles as input.
 
@@ -98,7 +98,7 @@ Note that the total number of parameters estimated by the neural network (its "o
 
 **FRAME_STRIDE_MSEC:** As described above, this parameter determines the spacing between analysis windows (e.g. every 5.0 msec by default) and thus how many formant measurements are produced per file. But also note that this also controls how many analysis windows are extracted and used during training as well. So, for example, reducing this to 2.5 msec would in effect double the amount of training instances from the same training set (doubling the training time), while increasing it to 10.0 msec would halve the training material.
 
-**WINDOW_LENGTH_MSEC:** This parameter (default 32.0 msec) determines the analysis window width (amount of signal used to predict formant values). Note that this value along with the MAX\_ANALYSIS\_FREQ determines the resulting size of the spectral envelope (number of frequency bins), and hence the model's "input size" (size = WINDOW\_LENGTH\_MSEC * self.MAX\_ANALYSIS_FREQ / 1000.0 + 1). Increasing it will increase the model's size, possibly increasing its performance but also substantially increasing training and testing times.
+**WINDOW_LENGTH_MSEC:** This parameter (default 32.0 msec) determines the analysis window width (amount of signal used to predict formant values). Note that this value along with the MAX\_ANALYSIS\_FREQ determines the resulting size of the spectral envelope (number of frequency bins), and hence the model's "input size" (size = WINDOW\_LENGTH\_MSEC * MAX\_ANALYSIS_FREQ / 1000.0 + 1). Increasing it will increase the model's size, possibly increasing its performance but also substantially increasing training and testing times.
 
 **TESTRUN:** Setting this to True causes the script to run in Test Mode: Only 50 training files and 25 validation files are loaded for training, only 3 epochs of training are run, and only 10 files are tested. The entire script should only take a few minutes. In addition, the prefix "tmp_" is prepended to the given model and output directories (to avoid writing the test output to the final directories). So doing an initial run with TESTRUN = True is a great way to quickly test your setup, making sure all the required software is installed, input and output files are readable and writeable, and so forth, before running the script for real.
 
@@ -131,7 +131,7 @@ Note that the total number of parameters estimated by the neural network (its "o
 
 **EPOCHS and PATIENCE:** As explained above in the Validation Data section, these parameters control, respectively, the absolute maximum number of training epochs (default 200), and the number of epochs the algorithm will wait for a new minimum loss value (default 20).
 
-**ALLOW_RETRAIN:** If this parameter is set to True (the default), a training script will first check the model directory for any pre-existing models; if it finds any, it will load the latest model, and resume training that model from where it last stopped. For example, if EPOCHS is set to 200, then a pre-existing model trained for only 100 epochs (with the name model.epoch100.*) will be trained another 100 epochs. Hence, this option is particularly useful in cases in which the model training was interrupted for any reason before completion, saving time. This option could also be used to do more training on an already completely-trained model; however, this is unlikely to result in a substantially different model unless the training parameters are changed (a larger EPOCHS or PATIENCE, or a different LEARNING_RATE) or the training set is much different than before.
+**ALLOW_RETRAIN:** If this parameter is set to True (the default), a training script will first check the model directory for any pre-existing models; if it finds any, it will load the latest model, and resume training that model from where it last stopped. For example, if EPOCHS is set to 200, then a pre-existing model trained for only 100 epochs (with the name _model.epoch100.*_) will be trained another 100 epochs. Hence, this option is particularly useful in cases in which the model training was interrupted for any reason before completion, saving time. This option could also be used to do more training on an already completely-trained model; however, this is unlikely to result in a substantially different model unless the training parameters are changed (a larger EPOCHS or PATIENCE, or a different LEARNING_RATE) or the training set is much different than before.
 
 **DELETE_OLDER_MODELS:** As described above, the training algorithm initially saves a version of the model at each epoch that reaches a new loss minimum. When DELETE\_OLDER_MODELS is set to its default value of True, all but the final model is deleted at the end of training. Users may set this to False if they are interested in experimenting with the earlier models. (If multiple models are present, the current scripts always load the newest model; one must either remove the newer models or change the scripts to change this behavior.)
 
