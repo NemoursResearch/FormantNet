@@ -4,7 +4,7 @@
 [DEFAULT]
 
 # Run in Test Mode
-TESTRUN = True
+TESTRUN = False
 
 # Number of formants/poles  
 NFORMANTS = 6
@@ -74,7 +74,7 @@ PATIENCE = 20
 DELETE_OLDER_MODELS = True
 
 # Calculate distribution statistics and model loss on test set (skip this to save time)
-GET_TEST_LOSS = True
+GET_TEST_LOSS = False
 
 # Output file extension
 OUT_EXT = txt

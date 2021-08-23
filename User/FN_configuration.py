@@ -13,10 +13,6 @@ import configparser
 class configuration(object):
 
     def __init__(self):
-        pass
-
-    
-    def default(self):
 
         self.TESTRUN = False
         self.NFORMANTS =  6
@@ -50,69 +46,60 @@ class configuration(object):
         self.EPOCHS = 200
         self.PATIENCE = 20
         self.DELETE_OLDER_MODELS = True
-        self.GET_TEST_LOSS = True
+        self.GET_TEST_LOSS = False
         self.OUT_EXT = 'txt'
         self.REAL_AMPLITUDES = True
         self.FREQUENCIES_FIRST = True
         self.BIN_SMOOTH_PASSES = 10
         
-        self.more_configure()
-
         
     def configure(self, configFile=None):
         
-        if configFile is None:
-            self.default()            
-        else:
+        if configFile is not None:
             config = configparser.ConfigParser()
             config.read(configFile)
 
-            self.TESTRUN = config['DEFAULT'].getboolean('TESTRUN', False)
-            self.NFORMANTS = config['DEFAULT'].getint('NFORMANTS', 6)
-            self.NZEROS = config['DEFAULT'].getint('NZEROS', 1)
-            self.DIFFWEIGHT = config['DEFAULT'].getfloat('DIFFWEIGHT', 0.15)
-            self.SAMPLERATE = config['DEFAULT'].getfloat('SAMPLERATE', 16000.0)
+            self.TESTRUN = config['DEFAULT'].getboolean('TESTRUN', self.TESTRUN)
+            self.NFORMANTS = config['DEFAULT'].getint('NFORMANTS', self.NFORMANTS)
+            self.NZEROS = config['DEFAULT'].getint('NZEROS', self.NZEROS)
+            self.DIFFWEIGHT = config['DEFAULT'].getfloat('DIFFWEIGHT', self.DIFFWEIGHT)
+            self.SAMPLERATE = config['DEFAULT'].getfloat('SAMPLERATE', self.SAMPLERATE)
             self.MAX_ANALYSIS_FREQ = config['DEFAULT'].getfloat('MAX_ANALYSIS_FREQ', self.SAMPLERATE / 2.0)
-            self.MAXFREQ = config['DEFAULT'].getfloat('MAXFREQ', 8000.0)
-            self.MINFREQ = config['DEFAULT'].getfloat('MINFREQ', 0.0)
-            self.MAXBW = config['DEFAULT'].getfloat('MAXBW', 5000.0)
-            self.MINBW = config['DEFAULT'].getfloat('MINBW', 20.0)
-            self.MAXAMP = config['DEFAULT'].getfloat('MAXAMP', 100.0)
-            self.MINAMP = config['DEFAULT'].getfloat('MINAMP', -100.0)
-            self.WINDOW_LENGTH_MSEC = config['DEFAULT'].getfloat('WINDOW_LENGTH_MSEC', 32.0)
-            self.FRAME_STRIDE_MSEC = config['DEFAULT'].getfloat('FRAME_STRIDE_MSEC', 5.0)
-            self.PREEMPH = config['DEFAULT'].getfloat('PREEMPH', 0.98)
-            self.SMOOTH_LINEAR = config['DEFAULT'].getboolean('SMOOTH_LINEAR', True)
-            self.ENV_SMOOTH_PASSES = config['DEFAULT'].getint('ENV_SMOOTH_PASSES', 6)
-            self.FLOOR = config['DEFAULT'].getfloat('FLOOR', 0.001)
-            self.SEQUENCE_LENGTH = config['DEFAULT'].getint('SEQUENCE_LENGTH', 64)
+            self.MAXFREQ = config['DEFAULT'].getfloat('MAXFREQ', self.MAXFREQ)
+            self.MINFREQ = config['DEFAULT'].getfloat('MINFREQ', self.MINFREQ)
+            self.MAXBW = config['DEFAULT'].getfloat('MAXBW', self.MAXBW)
+            self.MINBW = config['DEFAULT'].getfloat('MINBW', self.MINBW)
+            self.MAXAMP = config['DEFAULT'].getfloat('MAXAMP', self.MAXAMP)
+            self.MINAMP = config['DEFAULT'].getfloat('MINAMP', self.MINAMP)
+            self.WINDOW_LENGTH_MSEC = config['DEFAULT'].getfloat('WINDOW_LENGTH_MSEC', self.WINDOW_LENGTH_MSEC)
+            self.FRAME_STRIDE_MSEC = config['DEFAULT'].getfloat('FRAME_STRIDE_MSEC', self.FRAME_STRIDE_MSEC)
+            self.PREEMPH = config['DEFAULT'].getfloat('PREEMPH', self.PREEMPH)
+            self.SMOOTH_LINEAR = config['DEFAULT'].getboolean('SMOOTH_LINEAR', self.SMOOTH_LINEAR)
+            self.ENV_SMOOTH_PASSES = config['DEFAULT'].getint('ENV_SMOOTH_PASSES', self.ENV_SMOOTH_PASSES)
+            self.FLOOR = config['DEFAULT'].getfloat('FLOOR', self.FLOOR)
+            self.SEQUENCE_LENGTH = config['DEFAULT'].getint('SEQUENCE_LENGTH', self.SEQUENCE_LENGTH)
             self.SEQUENCE_STRIDE = config['DEFAULT'].getint('SEQUENCE_STRIDE', self.SEQUENCE_LENGTH)
-            self.BATCH_SIZE = config['DEFAULT'].getint('BATCH_SIZE', 32)
-            self.LSTM_LAYERS = config['DEFAULT'].getint('LSTM_LAYERS', 1)
-            self.DENSE_LAYERS = config['DEFAULT'].getint('DENSE_LAYERS', 1)
-            self.LSTM_UNITS = config['DEFAULT'].getint('LSTM_UNITS', 512)
-            self.DENSE_UNITS = config['DEFAULT'].getint('DENSE_UNITS', 512)
-            self.DENSE_ACTIVATION = config['DEFAULT'].get('DENSE_ACTIVATION', 'relu')
-            self.TOP_ACTIVATION = config['DEFAULT'].get('TOP_ACTIVATION', 'sigmoid')
-            self.LEARNING_RATE = config['DEFAULT'].getfloat('LEARNING_RATE', 0.0001)
-            self.ALLOW_RETRAIN = config['DEFAULT'].getboolean('ALLOW_RETRAIN', True)
-            self.EPOCHS = config['DEFAULT'].getint('EPOCHS', 200)
-            self.PATIENCE = config['DEFAULT'].getint('PATIENCE', 20)
-            self.DELETE_OLDER_MODELS = config['DEFAULT'].getboolean('DELETE_OLDER_MODELS', True)
-            self.GET_TEST_LOSS = config['DEFAULT'].getboolean('GET_TEST_LOSS', True)
-            self.OUT_EXT = config['DEFAULT'].get('OUT_EXT', 'txt')
-            self.REAL_AMPLITUDES = config['DEFAULT'].getboolean('REAL_AMPLITUDES', True)
-            self.FREQUENCIES_FIRST = config['DEFAULT'].getboolean('FREQUENCIES_FIRST', True)
-            self.BIN_SMOOTH_PASSES = config['DEFAULT'].getint('BIN_SMOOTH_PASSES', 10)
-
-            self.more_configure()
-
-        
-    def more_configure(self):
+            self.BATCH_SIZE = config['DEFAULT'].getint('BATCH_SIZE', self.BATCH_SIZE)
+            self.LSTM_LAYERS = config['DEFAULT'].getint('LSTM_LAYERS', self.LSTM_LAYERS)
+            self.DENSE_LAYERS = config['DEFAULT'].getint('DENSE_LAYERS', self.DENSE_LAYERS)
+            self.LSTM_UNITS = config['DEFAULT'].getint('LSTM_UNITS', self.LSTM_UNITS)
+            self.DENSE_UNITS = config['DEFAULT'].getint('DENSE_UNITS', self.DENSE_UNITS)
+            self.DENSE_ACTIVATION = config['DEFAULT'].get('DENSE_ACTIVATION', self.DENSE_ACTIVATION)
+            self.TOP_ACTIVATION = config['DEFAULT'].get('TOP_ACTIVATION', self.TOP_ACTIVATION)
+            self.LEARNING_RATE = config['DEFAULT'].getfloat('LEARNING_RATE', self.LEARNING_RATE)
+            self.ALLOW_RETRAIN = config['DEFAULT'].getboolean('ALLOW_RETRAIN', self.ALLOW_RETRAIN)
+            self.EPOCHS = config['DEFAULT'].getint('EPOCHS', self.EPOCHS)
+            self.PATIENCE = config['DEFAULT'].getint('PATIENCE', self.PATIENCE)
+            self.DELETE_OLDER_MODELS = config['DEFAULT'].getboolean('DELETE_OLDER_MODELS', self.DELETE_OLDER_MODELS)
+            self.GET_TEST_LOSS = config['DEFAULT'].getboolean('GET_TEST_LOSS', self.GET_TEST_LOSS)
+            self.OUT_EXT = config['DEFAULT'].get('OUT_EXT', self.OUT_EXT)
+            self.REAL_AMPLITUDES = config['DEFAULT'].getboolean('REAL_AMPLITUDES', self.REAL_AMPLITUDES)
+            self.FREQUENCIES_FIRST = config['DEFAULT'].getboolean('FREQUENCIES_FIRST', self.FREQUENCIES_FIRST)
+            self.BIN_SMOOTH_PASSES = config['DEFAULT'].getint('BIN_SMOOTH_PASSES', self.BIN_SMOOTH_PASSES)
         
         if self.MAX_ANALYSIS_FREQ > self.SAMPLERATE / 2.0:
             print("MAX_ANALYSIS_FREQ value", self.MAX_ANALYSIS_FREQ, 
-                  "is too high; it must be less than or equal to half the SAMPLERATE.\n")
+                  "is too high; it must be less than or equal to half the SAMPLERATE.")
             self.MAX_ANALYSIS_FREQ = self.SAMPLERATE / 2.0
             print("Reset MAX_ANALYSIS_FREQ to", self.MAX_ANALYSIS_FREQ)
             
@@ -154,9 +141,11 @@ class configuration(object):
         print("Bandwidths:", self.MINBW, "-", self.MAXBW, "Hz")
         print("Amplitude correction factors:", self.MINAMP, "-", self.MAXAMP, "dB")
 
-        print("\nAnalysis window length:", self.WINDOW_LENGTH_MSEC, "msec")
+        print("\nAnalysis window length:", self.WINDOW_LENGTH_MSEC, 
+              "msec (" + str(self.WINDOW_LENGTH_SAMPLES), "samples)")
         print("Spectral resolution (model input size):", self.SPECTRUM_NPOINTS, "bins")
-        print("Analysis window spacing: Once every", self.FRAME_STRIDE_MSEC, "msec")
+        print("Analysis window spacing: Once every", self.FRAME_STRIDE_MSEC, 
+              "msec (" + str(self.FRAME_STRIDE_SAMPLES), "samples)")
         print("Pre-emphasis factor:", self.PREEMPH)
         print("Perform smoothing on linear-scale envelopes (rather than dB-scale):", self.SMOOTH_LINEAR)
         print("# of envelope smoothing passes:", self.ENV_SMOOTH_PASSES)
@@ -185,6 +174,7 @@ class configuration(object):
         print("Output real (predicted) amplitudes?:", self.REAL_AMPLITUDES)
         print("Output in frequencies-first order?:", self.FREQUENCIES_FIRST)
         print("# of binomial smoothing passes on output:", self.BIN_SMOOTH_PASSES)
+        print("\n")
 
 
 # In[ ]:
