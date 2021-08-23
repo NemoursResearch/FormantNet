@@ -58,8 +58,10 @@ def getdata(filelist, cfg, verbose=1):
     if verbose > 0:
         import time
         start_time = time.perf_counter()
+        nfiles = len(filelist)
+        tenper = nfiles // 10
     datalist = []
-    for f in filelist:
+    for j, f in enumerate(filelist):
         audio_binary = tf.io.read_file(f)
         aud0, fs = tf.audio.decode_wav(audio_binary)
         normed_audio = tf.squeeze(aud0, axis = -1)
@@ -80,6 +82,12 @@ def getdata(filelist, cfg, verbose=1):
         #Spectral envelope smoothing
         for i in range(specs.shape[0]):
             datalist += list(smooth_spenvl(specs[i], cfg.ENV_SMOOTH_PASSES))
+            
+        if verbose > 0 and (j+1) % tenper == 0 and j+1 < nfiles:
+            minutes = (time.perf_counter() - start_time) / 60.0
+            print("  Loaded {} ({}%) of {} files (time: {:.2f} min)"
+                  .format(j+1, ((j+1)*100)//nfiles, nfiles, minutes))
+            sys.stdout.flush()
 
     dataset = np.array(datalist, dtype=np.float32).reshape(-1, specs.shape[1])
     
@@ -91,7 +99,9 @@ def getdata(filelist, cfg, verbose=1):
     dataset = dataset[:,:cfg.SPECTRUM_NPOINTS]
     
     if (verbose > 0):
-        print("Loaded", len(filelist), "files (time:", time.perf_counter() - start_time, ")")
+        minutes = (time.perf_counter() - start_time) / 60.0
+        print("Loaded {} files (Total time: {:.2f} min)".format(nfiles, minutes))
+        sys.stdout.flush()
     return specs.shape[1], dataset
 
 

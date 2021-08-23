@@ -261,6 +261,9 @@ def train_model(model, modeldir, cfg, train_dset, val_dset=None):
 
 
 def track_files(testlist, model, trmean, trstd, cfg, outdir=None):
+    
+    import time
+    start_time = time.perf_counter()
 
     rescale_params = get_rescale_fn(cfg)
 
@@ -358,6 +361,9 @@ def track_files(testlist, model, trmean, trstd, cfg, outdir=None):
             out1[i,:].tofile(ff, sep=" ", format="%.2f")
             ff.write(" \n")
         ff.close()
+        
+    t = time.perf_counter() - start_time
+    print("Total tracking time: {:.2f} min ({:.2f} sec/file)".format(t/60.0, t/len(testlist)))
 
 
 # ## Code bebugging
