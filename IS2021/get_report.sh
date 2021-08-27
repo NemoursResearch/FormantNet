@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#This script takes two command-line variables, an experiment label and sub-experiment label, that together combine to form the output directory resulting from a FormantTracking experiment. E.g. the command line:
+#This script takes two command-line variables, an experiment label and sub-experiment label, that together combine to form the output directory resulting from a FormantNet experiment. E.g. the command line:
 
 #get_report.sh mvt19 f6z1
 

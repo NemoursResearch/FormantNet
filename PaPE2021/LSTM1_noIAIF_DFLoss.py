@@ -5,7 +5,7 @@
 # 
 # The Python code (run under TensorFlow 2.4) that was used to train and evaluate the non-IAIF models reported to PaPE 2021 is given below. The code is unaltered, except that (1) comments have been added, and (2) code used solely to evaluate the trained model on non-TIMIT data has been removed.
 # 
-# Note that the code makes some assumptions based on the circumstances of our computational setup at the time (e.g. file names and locations, etc.) and so cannot be run as-is without the same setup. You may also notice differences in code between the IS2021 models and these models. Some of these differences are due to the necessary differences between the experiments, of course, while other differences are irrelevant to the training and evaluation, and are simply due to the evolution of the code over time, e.g. to make the code more readable and generalizable. We intend to provide a more uniform and user-friendly version of the code for general use soon.
+# Note that the code makes some assumptions based on the circumstances of our computational setup at the time (e.g. file names and locations, etc.) and so cannot be run as-is without the same setup. You may also notice differences in code between the IS2021 models and these models. Some of these differences are due to the necessary differences between the experiments, of course, while other differences are irrelevant to the training and evaluation, and are simply due to the evolution of the code over time, e.g. to make the code more readable and generalizable. An updated, generalized, and user-friendly version of the code for general public use has been provided in the **../User/** directory.
 # 
 # ### Execution:
 # This script was run with five command-line parameters that indicate the number of formants and antiformants; whether spectral smoothing should be done on the linear spectra ("T") or the log spectra ("F"; we recommend "T"); whether to use pre-emphasis or not ("T" or "F"); and finally the delta-frequency loss weighting parameter W as a percentage. The output (consisting of data statistics, model specifications, and script progress reports, including training and validation loss) is saved to an output file, e.g.:
@@ -18,7 +18,7 @@
 # If the name of the directory in which the script is run is e.g. expdir/, then the script looks for the input data in a sister directory ../data/, where the two input file lists timwavs_ordered2.txt and VTRlist1.txt (described below) should be found. Also in there should be a directory ../data/timit/timitlink/, which holds the TIMIT wavefiles in the same directory structure as in the original corpus, i.e. two subdirectories test/ and train/, each with subdirectories for dialects (dr1-dr8), and each of those with subdirectories for each speaker. Unlike the IAIF-using scripts of IS2021, this script takes the original raw wavefiles as input.
 # 
 # ### Output:
-# The output models and evaluation files are saved to a directory named, e.g. expdir/mvt33_f6z1TF10/ (where "mvt33" was the unique designation for this experiment, and the rest indicates the command-line options chosen). The model files are stored directly in this directory. A subdirectory, expdir/mvt33_f6z1TF10/timit/, in which the output formant track files are stored, one for each input file. These are stored in a format (described below) that was designed to the specific interests of our laboratory, so scripts will be provided that were used to extract the frequencies for evaluation against the VTR-TIMIT database.
+# The output models and evaluation files are saved to a directory named, e.g. expdir/mvt33_f6z1TF10/ (where "mvt33" was the unique designation for this experiment, and the rest indicates the command-line options chosen). The model files are stored directly in this directory. A subdirectory, expdir/mvt33_f6z1TF10/timit/, in which the output formant track files are stored, one for each input file. These are stored in a format (described below) that was designed for the specific interests of our laboratory, so scripts are provided that were used to extract the frequencies for evaluation against the VTR-TIMIT database.
 
 # In[ ]:
 
@@ -74,7 +74,7 @@ else:
 # timit/timitlink/train/dr1/fecd0/si2048  
 # timit/timitlink/train/dr1/fecd0/si788*  
 # 
-# The code further down below assumes 6300 files, in the order train (4140), validation (480), test (2040).
+# The code further down below assumes 6300 files, in the order train (4140), validation (480), test (1680).
 # The evaluation filelist VTRlist1.txt has the same format, except with the suffix ".wav" added to each line, and it only lists the 516 files included in the VTR-TIMIT corpus, in any order.
 # 
 # **Sequences:** For RNN models (e.g. LSTMs), a training **SEQUENCE_LENGTH** of 64 is specified; the training set is split into non-overlapping sequences of frames of this length (though the final model can accept sequences of any length for evaluation).
@@ -177,7 +177,7 @@ def spenvl(data, npasses):
     return data         
 
 
-# The variable **wlen** below sets the width of the input window (in samples; 512 corresponds to a 32-msec window with 16KHz-sampled speech). The number of data points per frame (the spectral resolution) will half of this number plus one, which for these experiments was kept at a constant 257 points and stored in the variable **npoints** below. **step** determines how often windows are extracted (in samples; 80 samples corresponds to 5 msec), and **pe** sets the degree of pre-emphasis, if it's used (this was also kept constant).
+# The variable **wlen** below sets the width of the input window (in samples; 512 corresponds to a 32-msec window with 16KHz-sampled speech). The number of data points per frame (the spectral resolution) will equal half of this number plus one, which for these experiments was kept at a constant 257 points and stored in the variable **npoints** below. **step** determines how often windows are extracted (in samples; 80 samples corresponds to 5 msec), and **pe** sets the degree of pre-emphasis, if it's used (this was also kept constant).
 
 # In[ ]:
 
@@ -195,15 +195,15 @@ scale = 2.0 / tf.reduce_sum(tf.signal.hann_window(window_length=wlen, periodic=F
 
 # The following function is used to load data and, if needed, add N context frames (ncframes) to each end.
 # (Context frames were only used for CNN experiments; see the IS2021 directory.)
-# Input include datadir (the common superdirectory for all input files), the filelist, the amount of spectral
-# smoothing, and the spectral smoothing and preemphasis flags described agove.
-# datdir is prepended to each file in the filelist, and may
-# be left as an empty string. The filelist may itself include its own subdirectories. The filelist
-# may be a single file (necessary for evaluation, as seen below). Note that getdata() concatenates
-# all input files into one single NumPy array, with nothing to indicate boundaries between input files.
-# Initial and final context frames (copies of the first and last frames) are added to this entire structure. This is
-# necessary because of how tf.keras.preprocessing.timeseries_dataset_from_array() works, which will be
-# used to divide the array into input windows (see below).
+# Input include datadir (the common superdirectory for all input files), the filelist, the amount of 
+# spectral smoothing, and the spectral smoothing and preemphasis flags described above. datadir is 
+# prepended to each file in the filelist, and may be left as an empty string. The filelist may itself 
+# include its own subdirectories. The filelist may be a single file (necessary for evaluation, as seen 
+# below). Note that getdata() concatenates all input files into one single NumPy array, with nothing to 
+# indicate boundaries between input files. Initial and final context frames (copies of the first and last 
+# frames) are added to this entire structure. This is necessary because of how 
+# tf.keras.preprocessing.timeseries_dataset_from_array() works, which will be used to divide the array 
+# into input windows (see below).
 
 def getdata(datadir, filelist=[], ncframes=0, smooth=6, verbose=1, smooth_lin=smlog, preemphasis=prelog):
     if verbose > 0:
@@ -350,7 +350,7 @@ del train1, val1
 
 # ### Definition of Loss function, etc.
 # 
-# The functions used to compute the loss are defined here. We tried to write the code so that it could handle variations in sampling rate (srate), frequency range (from 0 to maxfreq), number of formants (FORMANTS), number of anti-formants (ZEROS), spectral resolution (npoints), and the activation type of the final model output layer (myactivation). For the TIMIT experiments, these were all set constant across all experiments: 16K sampling rate, 0-8K frequency range, 6 formants, 1 zero, 257-point spectra, sigmoid activation.
+# The functions used to compute the loss are defined here. We tried to write the code so that it could handle variations in sampling rate (srate), frequency range (from 0 to maxfreq), number of formants (NFORMANTS), number of anti-formants (NZEROS), spectral resolution (npoints), and the activation type of the final model output layer (myactivation). For the TIMIT experiments, these were all set constant across all experiments: 16K sampling rate, 0-8K frequency range, 6 formants, 1 zero, 257-point spectra, sigmoid activation.
 
 # The formant() function takes the frequency F and bandwidth B of each formant predicted by the model, and generates a corresponding formant: an array of spectrum levels h at each frequency bin f in the spectrum range at the given resolution (see Eqn. (1) of the IS2021 paper). The vtfn() function weights these by their corresponding amplitude factors, and combines them (multiplying or dividing, corresponding to whether it's a pole or zero) to produce a linear-scale spectral envelope.
 
@@ -531,7 +531,7 @@ else:
     last_epoch=0
 
 
-# The trained model is saved after every epoch that produces a validation loss lower than that of any previous epoch. Models were trained until the best best validation loss was not improved after 20 epochs (patience=20), or a maximum of 200 epochs.
+# The trained model is saved after every epoch that produces a validation loss lower than that of any previous epoch. Models were trained until the best validation loss was not improved after 20 epochs (patience=20), or a maximum of 200 epochs.
 
 # In[ ]:
 
@@ -603,7 +603,7 @@ print("Test loss (TIMIT):", test_eval[0])
 # Other notes:
 # * For output interpretation, it's important to remember that the generated "amplitudes" are not actually final formant amplitudes, but rather weighting factors that are used to adjust the initial formant amplitudes generated by formant().
 # * The following code changes the frequencies of the zeros to negative values, to distinguish them from the poles. Also, since the zeros don't have their own amplitude correction factors, a placeholder value of "0.0" is inserted (theoretically we should have used 1.0 instead, but this value is not used in any computations).
-# * The output code below assumes a frame rate of one per 5 milliseconds, which is the rate we used for our input data. (However, the VTR TIMIT measurements were taken once per 10 milliseconds, so every other output frame was used for evaluation.)
+# * The output code below assumes a frame rate of once every 5 milliseconds, which is the rate we used for our input data. (However, the VTR TIMIT measurements were taken once every 10 milliseconds, so every other output frame was used for evaluation.)
 # * Since there is nothing in the custom loss code above that distinguishes one formant from another (aside from poles versus zeros), and any of them can take frequency values between 0 and 8000, the model output neurons may generate the formants in any random order (although that order will be constant from one frame to the next; e.g. if neuron 3 generates F1 for one frame, it does so for all frames and files).  The code below reorders the formants by their mean frequencies over all frames.
 
 # In[ ]:

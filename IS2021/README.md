@@ -12,7 +12,7 @@ The Python code used to train the models, and run them on the evaluation data, a
 * **BLSTM1**: A model with 1 bidirectional LSTM layer.
 * **LSTM3**: A model with 3 LSTM layers.
 
-Note that the code makes some assumptions based on the circumstances of our computational setup at the time; one would need to edit the code accordingly for their own setup. You may also notice differences in code between the four models. Some of these differences are due to the necessary differences between the 4 experiments, of course, while other differences are irrelevant to the training and evaluation, and are simply due to the evolution of the code over time, e.g. to make the code more readable and generalizable. We intend to provide a more uniform and user-friendly version of the code for general use soon.
+Note that the code makes some assumptions based on the circumstances of our computational setup at the time; one would need to edit the code accordingly for their own setup. You may also notice differences in code between the four models. Some of these differences are due to the necessary differences between the 4 experiments, of course, while other differences are irrelevant to the training and evaluation, and are simply due to the evolution of the code over time, e.g. to make the code more readable and generalizable. An updated, generalized, and user-friendly version of the code for general public use has been provided in the **../User/** directory.
 
 ### Execution:
 
@@ -20,7 +20,7 @@ Each script is run with two or three command-line parameters (usually specifying
 
 > CNN3.py 6 1 > CNN3.f6z1.out
 
-The script may take hours to days to run. (In our case, running the script on machines using 24 parallel cores per job, these experiments ran between half a day and 2 days.)
+On a GPU, the script make take a few hours; on a CPU, the script may take several hours to a few days to run. (In our case, running the script on CPU machines using 24 parallel cores per job, these experiments ran between half a day and 2 days.)
 
 ### Input:
 

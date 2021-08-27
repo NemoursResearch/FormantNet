@@ -5,20 +5,20 @@
 # 
 # The Python code (run under TensorFlow 2.3) that was used to train and evaluate the LSTM1 model submitted to Interspeech 2021 is given below. The code is unaltered, except that (1) comments have been added, and (2) code used solely to evaluate the trained model on non-TIMIT data has been removed.
 # 
-# Note that the code makes some assumptions based on the circumstances of our computational setup at the time (e.g. file names and locations, etc.) and so cannot be run as-is without the same setup. You may also notice differences in code between the four models. Some of these differences are due to the necessary differences between the 4 experiments, of course, while other differences are irrelevant to the training and evaluation, and are simply due to the evolution of the code over time, e.g. to make the code more readable and generalizable. We intend to provide a more uniform and user-friendly version of the code for general use soon.
+# Note that the code makes some assumptions based on the circumstances of our computational setup at the time (e.g. file names and locations, etc.) and so cannot be run as-is without the same setup. You may also notice differences in code between the four models. Some of these differences are due to the necessary differences between the 4 experiments, of course, while other differences are irrelevant to the training and evaluation, and are simply due to the evolution of the code over time, e.g. to make the code more readable and generalizable. An updated, generalized, and user-friendly version of the code for general public use has been provided in the **../User/** directory.
 # 
 # ### Execution:
 # This script was run with two command-line parameters that indicate the number of formants and antiformants, and the output (consisting of data statistics, model specifications, and script progress reports, including training and validation loss) is saved to an output file, e.g.:
 # 
 # LSTM1.py 6 1 > LSTM1.f6z1.out
 # 
-# It needs to be run on a server with access to Tensorflow 2.3, and may take hours to days to run. (In our case, running the script on machines using 24 cores, these experiments ran between half a day and 2 days.)
+# It needs to be run on a server with access to Tensorflow 2.3. On a GPU, the script make take a few hours; on a CPU, the script may take several hours to a few days to run. (In our case, running the script on CPU machines using 24 parallel cores per job, these experiments ran between half a day and 2 days.)
 # 
 # ### Input:
 # If the name of the directory in which the script is run is e.g. expdir/, then the script looks for the input data in a sister directory ../data/, where the two input file lists timit_ordered1.txt and VTRlist0.txt (described below) should be found. Also in there should be a directory ../data/timit/srcflt_r480_ENV_db68/vtspecs/, which holds the individual spectral envelope files derived from each TIMIT wavefile (also described below).
 # 
 # ### Output:
-# The output models and evaluation files are saved to a directory named expdir/mvt13_f6z1/ (where "mvt13" was the unique designation for this experiment, and "f6z1" indicates 6 formants and 1 zero). The model files are stored directly in this directory. A subdirectory, expdir/mvt13_f6z1/timit/, in which the output formant track files are stored, one for each input file. These are stored in a format (described below) that was designed to the specific interests of our laboratory, so scripts will be provided that were used to extract the frequencies for evaluation against the VTR-TIMIT database.
+# The output models and evaluation files are saved to a directory named expdir/mvt13_f6z1/ (where "mvt13" was the unique designation for this experiment, and "f6z1" indicates 6 formants and 1 zero). The model files are stored directly in this directory. A subdirectory, expdir/mvt13_f6z1/timit/, will hold the output formant track files, one for each input file. These are stored in a format (described below) that was designed for the specific interests of our laboratory, so scripts are provided that were used to extract the frequencies for evaluation against the VTR-TIMIT database.
 
 # In[ ]:
 
@@ -66,7 +66,7 @@ else:
 # train_dr1_fecd0_si2048  
 # train_dr1_fecd0_si788*  
 # 
-# The code further down below assumes 6300 files, in the order train (4140), validation (480), test (2040).
+# The code further down below assumes 6300 files, in the order train (4140), validation (480), test (1680).
 # The evaluation filelist VTRlist0.txt has the same format, except it only lists the 516 files included in the VTR-TIMIT corpus, in any order.
 # 
 # **Context frames and sequences:** For CNN models, the model input for each time-step was set up so that it included not only the target frame, but also the N preceding frames and N following frames, for context. This is controlled by the variable **n_context_frames** below, and the total length of the input (2\*N+1) is stored in **window_length**. For CNN3, n_context_frames was 10 (window_length 21). Each of these windows overlaps with the next, e.g. the window for frame 50 includes frames 40-60, the window for frame 51 includes frames 41-61, and so on. For RNNs, n_context_frames was 0 (window_length 1), but a training **SEQUENCE_LENGTH** of 64 is specified; the training set is split into non-overlapping sequences of frames of this length (though the final model can accept sequences of any length for evaluation).
@@ -135,21 +135,21 @@ with open(superdir + 'VTRlist0.txt') as f:
 
 # ### Datasets -- log scale spectra:
 # 
-# The following code reads in and normalizes the training and validation data, which consist of a log-scale (dB) spectral envelope calculated from each frame of input, as described in our IS2021 paper. There is one input file for each wavefile. The file is in binary format, and starts with a 24-byte header. The first 8 bytes consists of two 4-byte integers specifying first the number of frames, and then number of data points per frame (the spectral resolution), which for IS2021 was kept at a constant 257 points and stored in the variable **npoints**. Following the header are the spectra themselves, which are stored as float values.
+# The following code reads in and normalizes the training and validation data, which consist of a log-scale (dB) spectral envelope calculated from each frame of input, as described in our IS2021 paper. There is one input file for each wavefile. The file is in binary format, and starts with a 24-byte header. The first 8 bytes consist of two 4-byte integers specifying first the number of frames, and then the number of data points per frame (the spectral resolution), which for IS2021 was kept at a constant 257 points and stored in the variable **npoints**. Following the header are the spectra themselves, which are stored as float values.
 
 # In[ ]:
 
 
 # The following function is used to load data and, if needed, add N context frames (ncframes) to each end.
 # Input include datadir (the common superdirectory for all input files), the filelist, and a suffix. 
-# datdir and suffix are prepended and appended (respectively) to each file in the filelist, and may each
+# datadir and suffix are prepended and appended (respectively) to each file in the filelist, and may each
 # be left as empty strings. The filelist may itself include its own subdirectories and suffixes. The filelist
 # may be a single file (necessary for evaluation, as seen below). If filelist is empty, the function will
 # load all files in datadir (in which case suffix should be left empty). Note that getdata() concatenates
 # all input files into one single NumPy array, with nothing to indicate boundaries between input files.
-# Initial and final context frames (copies of the first and last frames) are added to this entire structure. This is
-# necessary because of how tf.keras.preprocessing.timeseries_dataset_from_array() works, which will be
-# used to divide the array into input windows (see below).
+# Initial and final context frames (copies of the first and last frames) are added to this entire structure.
+# This is necessary because of how tf.keras.preprocessing.timeseries_dataset_from_array() works, which will
+# be used to divide the array into input windows (see below).
 
 def getdata(datadir, filelist=[], suffix=".wav", ncframes=0, verbose=1):
     import struct
@@ -265,7 +265,7 @@ del train1, val1
 
 # ### Definition of Loss function, etc.
 # 
-# The functions used to compute the loss are defined here. We tried to write the code so that it could handle variations in sampling rate (srate), frequency range (from 0 to maxfreq), number of formants (FORMANTS), number of anti-formants (ZEROS), spectral resolution (npoints), and the activation type of the final model output layer (myactivation). For IS2021, these were all set constant across all experiments: 16K sampling rate, 0-8K frequency range, 6 formants, 1 zero, 257-point spectra, sigmoid activation.
+# The functions used to compute the loss are defined here. We tried to write the code so that it could handle variations in sampling rate (srate), frequency range (from 0 to maxfreq), number of formants (NFORMANTS), number of anti-formants (NZEROS), spectral resolution (npoints), and the activation type of the final model output layer (top_activation). For IS2021, these were all set constant across all experiments: 16K sampling rate, 0-8K frequency range, 6 formants, 1 zero, 257-point spectra, sigmoid activation.
 # 
 # The code here is a bit different here than in the CNN models, due to the necessity of having to add another dimension to the data for sequences.
 
@@ -411,7 +411,7 @@ model.compile(
 )
 
 
-# The trained model is saved after every epoch that produces a validation loss lower than that of any previous epoch. Models were trained until the best best validation loss was not improved after 20 epochs (patience=20), or a maximum of 200 epochs.
+# The trained model is saved after every epoch that produces a validation loss lower than that of any previous epoch. Models were trained until the best validation loss was not improved after 20 epochs (patience=20), or a maximum of 200 epochs.
 
 # In[ ]:
 
@@ -490,7 +490,7 @@ sys.stdout.flush()
 # Other notes:
 # * For output interpretation, it's important to remember that the generated "amplitudes" are not actually final formant amplitudes, but rather weighting factors that are used to adjust the initial formant amplitudes generated by formant().
 # * The following code changes the frequencies of the zeros to negative values, to distinguish them from the poles. Also, since the zeros don't have their own amplitude correction factors, a placeholder value of "0.0" is inserted (theoretically we should have used 1.0 instead, but this value is not used in any computations).
-# * The output code below assumes a frame rate of one per 5 milliseconds, which is the rate we used for our input data. (However, the VTR TIMIT measurements were taken once per 10 milliseconds, so every other output frame was used for evaluation.)
+# * The output code below assumes a frame rate of once every 5 milliseconds, which is the rate we used for our input data. (However, the VTR TIMIT measurements were taken once every 10 milliseconds, so every other output frame was used for evaluation.)
 # * Since there is nothing in the custom loss code above that distinguishes one formant from another (aside from poles versus zeros), and any of them can take frequency values between 0 and 8000, the model output neurons may generate the formants in any random order (although that order will be constant from one frame to the next; e.g. if neuron 3 generates F1 for one frame, it does so for all frames and files).  The code below reorders the formants by their mean frequencies over all frames.
 # * For the CNN models, each input frame must be converted into a window, and each window fed to the model one at a time in a loop. For the RNN models, the frame sequence can be given to the model all at once because it is designed to read sequences.
 
