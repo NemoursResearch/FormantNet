@@ -36,7 +36,7 @@ Note that the scripts will also print a bunch of information (including the full
 ## Output:
 
 ### Model:
-A trained model will be stored in the specified model directory as 4 files: one named **checkpoint**; one named **Normfile** (which stores the mean and standard deviation of the training set, and is needed to normalize future test data); And two called **model.epoch**_NNN_ **.index** and **model.epoch**_NNN_**.data-0000-of-0001**, where _NNN_ is a numeral indicating the final epoch at which the model was saved during training (see below). If the configuration variable SAVE\_OLDER_MODELS is set to False, earlier versions of the model may be saved in the model directory as well. (These won't interfere with future model use; the scripts always use the latest model version.)
+A trained model will be stored in the specified model directory as 4 files: one named **checkpoint**; one named **Normfile** (which stores the mean and standard deviation of the training set, and is needed to normalize future test data); And two called **model.epoch**_NNN_ **.index** and **model.epoch**_NNN_**.data-0000-of-0001**, where _NNN_ is a numeral indicating the final epoch at which the model was saved during training (see below). If the configuration variable DELETE\_OLDER_MODELS is set to False, earlier versions of the model may be saved in the model directory as well. (These won't interfere with future model use; the scripts always use the latest model version.)
 
 ### Formant Track Files:
 
